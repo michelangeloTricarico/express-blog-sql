@@ -11,21 +11,13 @@ function index(req, res) {
 }
  
 function show(req, res) {
-  const id = parseInt(req.params.id)
-  const post = posts.find((post) => post.id === id)
-  // res.createError(Null) --> to create 500 error
-
-  // condiction if post no found	
-  if(!post){
-
-    res.status(404)
-    return res.json({
-      error: "Not Found",
-      message: "Post no found"
-    })
-  }
-
-  res.json(post)
+  const id = req.params.id
+  const sql = 'SELECT * FROM posts WHERE id = ?';
+  connection.query(sql, [id], (err, results) => {
+    if (err) return res.status(500).json({ error: 'Database query failed' });
+    if (results.length === 0) return res.status(404).json({ error: 'Post not found' });
+    res.json(results[0]);
+  });
 }
 
 function destroy(req, res) {
