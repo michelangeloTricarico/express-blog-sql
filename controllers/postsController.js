@@ -3,11 +3,11 @@ const connection = require('../database/connection')
  
 
 function index(req, res) {
-    if (req.query.tags) {
-        const postFiltered = posts.filter(post => post.tags.includes(req.query.tags))
-        return res.json(postFiltered)
-    }
-    res.json(posts);
+    const sql = 'SELECT * FROM posts';
+    connection.query(sql, (err, results) => {
+      if (err) return res.status(500).json({ error: 'Database query failed' });
+      res.json(results);
+    });
 }
  
 function show(req, res) {
